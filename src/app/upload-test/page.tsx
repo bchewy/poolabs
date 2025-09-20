@@ -253,7 +253,7 @@ export default function ImageUploadTestPage() {
                           Image blurred for discretion
                         </p>
                         <p className="text-xs text-white/70">
-                          Click "Unblur" to view
+                          Click &quot;Unblur&quot; to view
                         </p>
                       </div>
                     </div>

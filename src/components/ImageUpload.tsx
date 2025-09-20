@@ -53,7 +53,7 @@ export function ImageUpload() {
       } else {
         setMessage(`Uploaded ${json.filename} (${Math.round(json.size / 1024)}KB)`);
       }
-    } catch (error) {
+    } catch {
       setMessage("Unexpected error during upload");
     } finally {
       setPending(false);

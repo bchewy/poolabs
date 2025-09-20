@@ -116,7 +116,7 @@ Be conservative in your assessments and flag anything unusual for medical attent
       console.log(`🔍 [${imageId}] Parsing JSON response...`);
       analysisResult = JSON.parse(responseText);
       console.log(`✅ [${imageId}] JSON parsed successfully`);
-    } catch (parseError) {
+    } catch {
       console.log(`⚠️ [${imageId}] JSON parsing failed, attempting to extract JSON from text...`);
       console.log(`📄 [${imageId}] Response preview: ${responseText.substring(0, 200)}...`);
 
