@@ -1,0 +1,77 @@
+# Arduino IDE files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Arduino build output
+build/
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+
+# Arduino IDE backup files
+*~
+*.orig
+
+# ESP32/Arduino specific
+.pio/
+.vscode/
+.platformio/
+
+# IDE and editor files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Build directories
+build/
+dist/
+out/
+
+# Dependencies (if using platformio or similar)
+lib/
+.pioenvs/
+.piolibdeps/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS generated files
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
