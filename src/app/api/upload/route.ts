@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 
-let analyzeStoolImage: any;
+interface AnalyzeFunction {
+  (params: {
+    imageBuffer: Buffer;
+    mimeType: string;
+    deviceId?: string;
+    notes?: string;
+  }): Promise<any>;
+}
+
+let analyzeStoolImage: AnalyzeFunction | null = null;
 try {
-  analyzeStoolImage = require("@/lib/openai").analyzeStoolImage;
-} catch (error) {
+  const openaiModule = require("@/lib/openai");
+  analyzeStoolImage = openaiModule.analyzeStoolImage;
+} catch {
   console.log("OpenAI module not available, using fallback");
 }
 
