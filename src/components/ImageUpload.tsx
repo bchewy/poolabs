@@ -40,13 +40,30 @@ export function ImageUpload() {
     }
     setPending(true);
     try {
-      const form = new FormData();
-      form.append("image", file);
-      if (deviceId) form.append("deviceId", deviceId);
-      if (bristolScore) form.append("bristolScore", bristolScore);
-      if (notes) form.append("notes", notes);
+      // Convert file to base64
+      const base64String = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
-      const response = await fetch("/api/upload", { method: "POST", body: form });
+      const jsonData = {
+        imageData: base64String,
+        filename: file.name,
+        mimeType: file.type,
+        deviceId: deviceId || undefined,
+        notes: notes || undefined,
+      };
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonData),
+      });
+
       const json = await response.json();
       if (!response.ok) {
         setMessage(`Failed: ${json.error ?? "unexpected error"}`);
@@ -63,7 +80,7 @@ export function ImageUpload() {
   return (
     <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/60 via-white/20 to-emerald-100/40 p-6 shadow-lg dark:border-white/5 dark:from-emerald-500/10 dark:via-zinc-900/80 dark:to-zinc-900">
       <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Image upload</h3>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Send a single frame to /api/upload as multipart/form-data.</p>
+      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Send a single frame to /api/upload as JSON.</p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">

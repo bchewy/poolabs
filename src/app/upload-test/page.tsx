@@ -74,16 +74,28 @@ export default function ImageUploadTestPage() {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("deviceId", deviceId);
-      if (notes) {
-        formData.append("notes", notes);
-      }
+      // Convert file to base64
+      const base64String = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const jsonData = {
+        imageData: base64String,
+        filename: file.name,
+        mimeType: file.type,
+        deviceId: deviceId,
+        notes: notes || undefined,
+      };
 
       const response = await fetch("/api/upload", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jsonData),
       });
 
       const data: UploadResponse = await response.json();
@@ -405,13 +417,13 @@ export default function ImageUploadTestPage() {
                 <div>
                   <p className="font-medium text-zinc-700 dark:text-zinc-300">Content-Type:</p>
                   <code className="block mt-1 rounded bg-black/10 px-2 py-1 text-xs text-emerald-600 dark:bg-black/20 dark:text-emerald-400">
-                    multipart/form-data
+                    application/json
                   </code>
                 </div>
                 <div>
                   <p className="font-medium text-zinc-700 dark:text-zinc-300">Required fields:</p>
                   <code className="block mt-1 rounded bg-black/10 px-2 py-1 text-xs text-emerald-600 dark:bg-black/20 dark:text-emerald-400">
-                    image (file)
+                    imageData, filename, mimeType
                   </code>
                 </div>
                 <div>
