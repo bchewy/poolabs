@@ -1,5 +1,15 @@
 import { supabase } from './supabase'
 
+export interface AnalysisResult {
+  bristolScore?: number;
+  color?: string;
+  volumeEstimate?: "low" | "medium" | "high";
+  hydrationIndex?: number;
+  flags?: string[];
+  confidence?: number;
+  analysis?: string;
+}
+
 export interface StoredAnalysis {
   id: string
   filename: string
@@ -25,7 +35,7 @@ export async function storeAnalysisResult(
   imageData: string,
   deviceId?: string,
   notes?: string,
-  aiAnalysis?: any
+  aiAnalysis?: AnalysisResult
 ): Promise<StoredAnalysis> {
   const { data, error } = await supabase
     .from('analysis_results')
