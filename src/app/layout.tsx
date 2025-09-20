@@ -58,6 +58,12 @@ export default function RootLayout({
               >
                 AI Upload Test
               </Link>
+              <Link
+                href="/database-dashboard"
+                className="rounded-full border border-orange-500/40 bg-orange-500/10 px-4 py-2 text-orange-600 shadow-sm transition hover:-translate-y-1 hover:bg-orange-500/20 hover:text-orange-700 dark:text-orange-300"
+              >
+                Database Dashboard
+              </Link>
             </nav>
           </header>
 

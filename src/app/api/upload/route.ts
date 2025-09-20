@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { storeAnalysisResult } from "@/lib/database";
 
 interface AnalysisResult {
   bristolScore?: number;
@@ -222,9 +223,28 @@ export async function POST(request: Request) {
       console.log(`   🎲 Confidence: ${aiAnalysis.confidence ? Math.round(aiAnalysis.confidence * 100) + '%' : 'N/A'}`);
     }
 
-    // Note: We don't persist files on the server filesystem to keep the demo simple
-    // and Vercel-compatible. Integrate a blob store (e.g., Vercel Blob, S3, Supabase)
-    // if you need persistence.
+    // Store the analysis result in Supabase
+    console.log(`💾 [${requestId}] Storing analysis result in database...`);
+    const dbStart = Date.now();
+
+    try {
+      await storeAnalysisResult(
+        body.filename,
+        body.mimeType,
+        size,
+        body.imageData,
+        meta.deviceId,
+        meta.notes,
+        aiAnalysis
+      );
+
+      const dbDuration = Date.now() - dbStart;
+      console.log(`✅ [${requestId}] Successfully stored in database in ${dbDuration}ms`);
+    } catch (dbError) {
+      const dbDuration = Date.now() - dbStart;
+      console.error(`❌ [${requestId}] Failed to store in database after ${dbDuration}ms:`, dbError);
+      // Continue with the response even if database storage fails
+    }
 
     return NextResponse.json({
       ok: true,
