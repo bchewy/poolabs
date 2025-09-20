@@ -19,6 +19,7 @@ interface UploadResponse {
   filename: string;
   mimeType: string;
   size: number;
+  error?: string;
   meta: {
     deviceId?: string;
     bristolScore?: string;
