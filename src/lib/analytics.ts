@@ -1,4 +1,4 @@
-import { StoolEvent } from "@/lib/types";
+import { EventFlag, StoolEvent } from "@/lib/types";
 
 export function averageBristolScore(events: StoolEvent[]): number {
   if (events.length === 0) return 0;
@@ -16,7 +16,7 @@ export function hydrationRiskCount(events: StoolEvent[]): number {
   return events.filter((event) => event.hydrationIndex < 0.4).length;
 }
 
-export function flagCount(events: StoolEvent[], flag: string): number {
+export function flagCount(events: StoolEvent[], flag: EventFlag): number {
   return events.filter((event) => event.flags.includes(flag)).length;
 }
 

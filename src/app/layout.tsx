@@ -52,6 +52,12 @@ export default function RootLayout({
               >
                 Live dashboard
               </Link>
+              <Link
+                href="/upload-test"
+                className="rounded-full border border-purple-500/40 bg-purple-500/10 px-4 py-2 text-purple-600 shadow-sm transition hover:-translate-y-1 hover:bg-purple-500/20 hover:text-purple-700 dark:text-purple-300"
+              >
+                AI Upload Test
+              </Link>
             </nav>
           </header>
 

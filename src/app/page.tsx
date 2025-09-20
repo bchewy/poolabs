@@ -243,7 +243,7 @@ export default async function Home() {
           Bristol event counts captured so far.
         </p>
         <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-7">
-          {(Object.keys(distribution) as Array<keyof typeof distribution>).map((score) => (
+          {([1, 2, 3, 4, 5, 6, 7] as const).map((score) => (
             <div
               key={score}
               className="rounded-2xl border border-white/40 bg-white/80 p-4 text-center shadow-sm dark:border-white/10 dark:bg-zinc-950/40"
@@ -255,7 +255,7 @@ export default async function Home() {
                 {distribution[score]}
               </div>
               <div className="mt-1 text-[11px] text-zinc-400 dark:text-zinc-500">
-                {bristolCopy[Number(score)]}
+                {bristolCopy[score]}
               </div>
             </div>
           ))}

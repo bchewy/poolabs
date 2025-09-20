@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CreateStoolEventPayload } from "@/lib/types";
+import { CreateStoolEventPayload, EventFlag } from "@/lib/types";
 
 const defaults: CreateStoolEventPayload = {
   deviceId: "poolabs-cam-dev",
@@ -194,10 +194,23 @@ export function EventSimulator() {
             onChange={(event) =>
               updateField(
                 "flags",
-                event.target.value
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter(Boolean)
+                (() => {
+                  const allFlags: readonly EventFlag[] = [
+                    "constipationWatch",
+                    "hydrateNow",
+                    "looseStoolAlert",
+                    "nocturnalEvent",
+                    "bloodDetected",
+                    "sensorCheck",
+                  ] as const;
+                  return event.target.value
+                    .split(",")
+                    .map((item) => item.trim())
+                    .filter(Boolean)
+                    .filter((val): val is EventFlag =>
+                      allFlags.includes(val as EventFlag)
+                    );
+                })()
               )
             }
             className="mt-1 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-400/40 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"

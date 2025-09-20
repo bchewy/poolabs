@@ -1,63 +1,34 @@
 [
   {
-    "id": "evt-2024-09-01-0805",
-    "timestamp": "2024-09-01T08:05:00+08:00",
-    "deviceId": "poolabs-cam-01",
-    "bristolScore": 2,
-    "color": "dark-brown",
-    "volumeEstimate": "medium",
-    "hydrationIndex": 0.32,
-    "calmModeUsed": true,
-    "flushDelaySeconds": 24,
-    "durationSeconds": 198,
-    "flags": ["constipationWatch"],
-    "sleepImpact": "Woke at 02:10 for bathroom trip; reports grogginess.",
-    "notes": "User reported mild straining despite calm track."
-  },
-  {
-    "id": "evt-2024-09-02-0720",
-    "timestamp": "2024-09-02T07:20:00+08:00",
-    "deviceId": "poolabs-cam-01",
+    "deviceId": "poolabs-cam-dev",
     "bristolScore": 4,
-    "color": "chestnut",
+    "color": "oak brown",
     "volumeEstimate": "medium",
-    "hydrationIndex": 0.68,
-    "calmModeUsed": false,
-    "flushDelaySeconds": 18,
-    "durationSeconds": 142,
-    "flags": [],
-    "sleepImpact": "Nocturnal interruption avoided; 7.1 hours sleep.",
-    "notes": "Near-ideal stool signature captured."
-  },
-  {
-    "id": "evt-2024-09-03-2158",
-    "timestamp": "2024-09-03T21:58:00+08:00",
-    "deviceId": "poolabs-cam-02",
-    "bristolScore": 6,
-    "color": "yellow",
-    "volumeEstimate": "high",
-    "hydrationIndex": 0.81,
+    "hydrationIndex": 0.6,
     "calmModeUsed": true,
-    "flushDelaySeconds": 31,
-    "durationSeconds": 163,
-    "flags": ["looseStoolAlert"],
-    "sleepImpact": "Late-evening diarrhea correlated with spicy dinner.",
-    "notes": "Audio cue suggested electrolyte drink."
+    "flushDelaySeconds": 20,
+    "durationSeconds": 160,
+    "flags": [],
+    "notes": "Manual test log from dashboard.",
+    "id": "poolabs-cam-dev-mfs4ti7s-364",
+    "timestamp": "2025-09-20T10:34:53.176Z"
   },
   {
-    "id": "evt-2024-09-04-0612",
-    "timestamp": "2024-09-04T06:12:00+08:00",
-    "deviceId": "poolabs-cam-01",
-    "bristolScore": 1,
-    "color": "hard-brown",
-    "volumeEstimate": "low",
-    "hydrationIndex": 0.22,
-    "calmModeUsed": false,
-    "flushDelaySeconds": 15,
-    "durationSeconds": 241,
-    "flags": ["constipationWatch", "hydrateNow"],
-    "sleepImpact": "Two wake-ups overnight; reports abdominal discomfort.",
-    "notes": "Caregiver notified via SMS failover."
+    "id": "evt-2024-09-06-2306",
+    "timestamp": "2024-09-06T23:06:00+08:00",
+    "deviceId": "poolabs-cam-02",
+    "bristolScore": 5,
+    "color": "light-brown",
+    "volumeEstimate": "medium",
+    "hydrationIndex": 0.61,
+    "calmModeUsed": true,
+    "flushDelaySeconds": 19,
+    "durationSeconds": 156,
+    "flags": [
+      "nocturnalEvent"
+    ],
+    "sleepImpact": "Event logged after 3AM wake. Sleep score dropped 8%.",
+    "notes": "Suggested follow-up with sleep coach module."
   },
   {
     "id": "evt-2024-09-05-0945",
@@ -75,18 +46,70 @@
     "notes": "Voice diary captured new recipe memory."
   },
   {
-    "id": "evt-2024-09-06-2306",
-    "timestamp": "2024-09-06T23:06:00+08:00",
+    "id": "evt-2024-09-04-0612",
+    "timestamp": "2024-09-04T06:12:00+08:00",
+    "deviceId": "poolabs-cam-01",
+    "bristolScore": 1,
+    "color": "hard-brown",
+    "volumeEstimate": "low",
+    "hydrationIndex": 0.22,
+    "calmModeUsed": false,
+    "flushDelaySeconds": 15,
+    "durationSeconds": 241,
+    "flags": [
+      "constipationWatch",
+      "hydrateNow"
+    ],
+    "sleepImpact": "Two wake-ups overnight; reports abdominal discomfort.",
+    "notes": "Caregiver notified via SMS failover."
+  },
+  {
+    "id": "evt-2024-09-03-2158",
+    "timestamp": "2024-09-03T21:58:00+08:00",
     "deviceId": "poolabs-cam-02",
-    "bristolScore": 5,
-    "color": "light-brown",
-    "volumeEstimate": "medium",
-    "hydrationIndex": 0.61,
+    "bristolScore": 6,
+    "color": "yellow",
+    "volumeEstimate": "high",
+    "hydrationIndex": 0.81,
     "calmModeUsed": true,
-    "flushDelaySeconds": 19,
-    "durationSeconds": 156,
-    "flags": ["nocturnalEvent"],
-    "sleepImpact": "Event logged after 3AM wake. Sleep score dropped 8%.",
-    "notes": "Suggested follow-up with sleep coach module."
+    "flushDelaySeconds": 31,
+    "durationSeconds": 163,
+    "flags": [
+      "looseStoolAlert"
+    ],
+    "sleepImpact": "Late-evening diarrhea correlated with spicy dinner.",
+    "notes": "Audio cue suggested electrolyte drink."
+  },
+  {
+    "id": "evt-2024-09-02-0720",
+    "timestamp": "2024-09-02T07:20:00+08:00",
+    "deviceId": "poolabs-cam-01",
+    "bristolScore": 4,
+    "color": "chestnut",
+    "volumeEstimate": "medium",
+    "hydrationIndex": 0.68,
+    "calmModeUsed": false,
+    "flushDelaySeconds": 18,
+    "durationSeconds": 142,
+    "flags": [],
+    "sleepImpact": "Nocturnal interruption avoided; 7.1 hours sleep.",
+    "notes": "Near-ideal stool signature captured."
+  },
+  {
+    "id": "evt-2024-09-01-0805",
+    "timestamp": "2024-09-01T08:05:00+08:00",
+    "deviceId": "poolabs-cam-01",
+    "bristolScore": 2,
+    "color": "dark-brown",
+    "volumeEstimate": "medium",
+    "hydrationIndex": 0.32,
+    "calmModeUsed": true,
+    "flushDelaySeconds": 24,
+    "durationSeconds": 198,
+    "flags": [
+      "constipationWatch"
+    ],
+    "sleepImpact": "Woke at 02:10 for bathroom trip; reports grogginess.",
+    "notes": "User reported mild straining despite calm track."
   }
 ]
