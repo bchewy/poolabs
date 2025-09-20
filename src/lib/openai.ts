@@ -164,7 +164,7 @@ Be conservative in your assessments and flag anything unusual for medical attent
 
   } catch (error) {
     console.error(`❌ [${imageId}] OpenAI analysis error:`, error);
-    console.error(`🔍 [${imageId}] Error details:`, error.message);
+    console.error(`🔍 [${imageId}] Error details:`, error instanceof Error ? error.message : 'Unknown error');
 
     const totalDuration = Date.now() - startTime;
     console.log(`⏱️ [${imageId}] Analysis failed after ${totalDuration}ms, using fallback`);
