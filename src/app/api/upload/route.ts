@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     console.log(`📋 [${requestId}] Form metadata:`);
     console.log(`   🔧 Device: ${meta.deviceId || 'not provided'}`);
-    console.log(`   🎯 Bristol hint: ${meta.bistolScore || 'not provided'}`);
+    console.log(`   🎯 Bristol hint: ${meta.bristolScore || 'not provided'}`);
     console.log(`   📝 Notes: ${meta.notes || 'not provided'}`);
 
     // Perform AI analysis on the image
