@@ -170,7 +170,7 @@ Be conservative in your assessments and flag anything unusual for medical attent
     console.log(`⏱️ [${imageId}] Analysis failed after ${totalDuration}ms, using fallback`);
 
     // Fallback to mock data if OpenAI fails
-    const fallbackResult = {
+    const fallbackResult: AnalysisResult = {
       bristolScore: 3,
       color: "brown",
       volumeEstimate: "medium",
