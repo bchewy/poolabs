@@ -10,6 +10,14 @@ interface AnalysisResult {
   analysis?: string;
 }
 
+interface JsonUploadRequest {
+  imageData: string; // base64 encoded image
+  filename: string;
+  mimeType: string;
+  deviceId?: string;
+  notes?: string;
+}
+
 // Simple fallback analysis function
 async function fallbackAnalysis(): Promise<AnalysisResult> {
   return {
@@ -23,6 +31,8 @@ async function fallbackAnalysis(): Promise<AnalysisResult> {
   };
 }
 
+// OLD multipart/form-data version (commented out)
+/*
 export async function POST(request: Request) {
   const startTime = Date.now();
   const requestId = Math.random().toString(36).substr(2, 9);
@@ -124,6 +134,113 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { error: "Internal server error during upload" },
+      { status: 500 }
+    );
+  }
+}
+*/
+
+// NEW JSON version
+export async function POST(request: Request) {
+  const startTime = Date.now();
+  const requestId = Math.random().toString(36).substr(2, 9);
+
+  console.log(`📤 [${requestId}] Received JSON image upload request`);
+  console.log(`🔗 [${requestId}] User agent: ${request.headers.get('user-agent')?.substring(0, 100)}...`);
+  console.log(`📍 [${requestId}] Origin: ${request.headers.get('origin') || 'unknown'}`);
+
+  try {
+    const body = await request.json() as JsonUploadRequest;
+
+    // Validate required fields
+    if (!body.imageData || !body.filename || !body.mimeType) {
+      console.log(`❌ [${requestId}] Invalid request: missing required fields`);
+      return NextResponse.json(
+        { error: "imageData, filename, and mimeType are required" },
+        { status: 400 }
+      );
+    }
+
+    console.log(`📸 [${requestId}] Image details: ${body.filename} (${body.mimeType})`);
+
+    // Convert base64 to buffer
+    const base64Data = body.imageData.replace(/^data:\w+\/\w+;base64,/, "");
+    const imageBuffer = Buffer.from(base64Data, 'base64');
+    const size = imageBuffer.byteLength;
+
+    const meta = {
+      deviceId: body.deviceId || undefined,
+      notes: body.notes || undefined,
+    };
+
+    console.log(`📋 [${requestId}] Request metadata:`);
+    console.log(`   🔧 Device: ${meta.deviceId || 'not provided'}`);
+    console.log(`   📝 Notes: ${meta.notes || 'not provided'}`);
+
+    // Perform AI analysis on the image
+    console.log(`🤖 [${requestId}] Starting AI analysis...`);
+    const analysisStart = Date.now();
+
+    let aiAnalysis = null;
+    try {
+      // Try to dynamically import OpenAI module
+      const openaiModule = await import("@/lib/openai");
+      aiAnalysis = await openaiModule.analyzeStoolImage({
+        imageBuffer,
+        mimeType: body.mimeType,
+        deviceId: meta.deviceId,
+        notes: meta.notes,
+      });
+
+      const analysisDuration = Date.now() - analysisStart;
+      console.log(`✅ [${requestId}] AI analysis completed in ${analysisDuration}ms`);
+
+      if (aiAnalysis.analysis && !aiAnalysis.analysis.includes('fallback')) {
+        console.log(`🎉 [${requestId}] Real OpenAI analysis successful!`);
+      } else {
+        console.log(`⚠️ [${requestId}] Using fallback analysis`);
+      }
+
+    } catch (error) {
+      const analysisDuration = Date.now() - analysisStart;
+      console.log(`⚠️ [${requestId}] OpenAI not available, using fallback after ${analysisDuration}ms`);
+      console.error(`🔍 [${requestId}] Error details:`, error);
+
+      // Use fallback analysis
+      aiAnalysis = await fallbackAnalysis();
+    }
+
+    const totalDuration = Date.now() - startTime;
+    console.log(`⏱️ [${requestId}] Total request processed in ${totalDuration}ms`);
+    console.log(`📊 [${requestId}] Final response summary:`);
+    console.log(`   📁 File: ${body.filename} (${Math.round(size / 1024)}KB)`);
+    console.log(`   🔧 Device: ${meta.deviceId || 'unknown'}`);
+    console.log(`   🤖 AI Analysis: ${aiAnalysis ? 'completed' : 'failed'}`);
+    if (aiAnalysis) {
+      console.log(`   🎯 Bristol: ${aiAnalysis.bristolScore || 'N/A'}`);
+      console.log(`   💧 Hydration: ${aiAnalysis.hydrationIndex ? Math.round(aiAnalysis.hydrationIndex * 100) + '%' : 'N/A'}`);
+      console.log(`   🎲 Confidence: ${aiAnalysis.confidence ? Math.round(aiAnalysis.confidence * 100) + '%' : 'N/A'}`);
+    }
+
+    // Note: We don't persist files on the server filesystem to keep the demo simple
+    // and Vercel-compatible. Integrate a blob store (e.g., Vercel Blob, S3, Supabase)
+    // if you need persistence.
+
+    return NextResponse.json({
+      ok: true,
+      filename: body.filename,
+      mimeType: body.mimeType,
+      size,
+      meta,
+      aiAnalysis,
+    });
+
+  } catch (error) {
+    const totalDuration = Date.now() - startTime;
+    console.error(`❌ [${requestId}] Request failed after ${totalDuration}ms:`, error);
+
+    return NextResponse.json(
+      { error: "Internal server error during JSON upload" },
       { status: 500 }
     );
   }
