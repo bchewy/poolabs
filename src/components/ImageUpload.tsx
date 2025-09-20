@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 
 export function ImageUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -151,9 +152,12 @@ export function ImageUpload() {
             </button>
           </div>
           <div className="relative">
-            <img
+            <Image
               src={preview}
               alt="Preview"
+              width={0}
+              height={0}
+              sizes="100vw"
               className={`w-full rounded-lg border border-zinc-200 dark:border-zinc-700 transition-all duration-300 ${
                 isImageBlurred ? 'blur-2xl scale-105' : 'blur-none'
               }`}

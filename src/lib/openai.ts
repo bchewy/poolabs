@@ -43,7 +43,7 @@ export async function analyzeStoolImage({
 
     console.log(`🔄 [${imageId}] Image converted to base64, sending to OpenAI...`);
 
-    const prompt = `You are a medical AI assistant specializing in stool analysis for health monitoring. Analyze this toilet bowl image and provide detailed health insights.
+    const systemPrompt = `You are a medical AI assistant specializing in stool analysis for health monitoring. Analyze this toilet bowl image and provide detailed health insights.
 
 Please analyze the stool and provide a JSON response with the following structure:
 {
@@ -74,40 +74,49 @@ Color Analysis:
 - Black: Could indicate upper GI bleeding
 - Red: Could indicate lower GI bleeding
 
-Be conservative in your assessments and flag anything unusual for medical attention. If you cannot make a confident assessment, indicate low confidence.`;
+Be conservative in your assessments and flag anything unusual for medical attention. If you cannot make a confident assessment, indicate low confidence.
+
+${notes ? `Additional user notes: ${notes}` : ''}`;
 
     // Use OpenAI's Responses API with vision capabilities
-    console.log(`🤖 [${imageId}] Calling OpenAI GPT-4o-mini API...`);
+    console.log(`🤖 [${imageId}] Calling OpenAI Responses API with GPT-5...`);
     const openaiStart = Date.now();
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
+    const response = await openai.responses.create({
+      model: "gpt-5",
+      input: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
         {
           role: "user",
           content: [
             {
-              type: "text",
-              text: prompt,
+              type: "input_image",
+              image_url: imageDataUrl,
+              detail: "auto",
             },
             {
-              type: "image_url",
-              image_url: {
-                url: imageDataUrl,
-              },
+              type: "input_text",
+              text: "Please analyze this stool image according to the medical guidelines provided.",
             },
           ],
         },
       ],
-      response_format: { type: "json_object" },
+      text: {
+        format: {
+          type: "json_object",
+        },
+      },
     });
 
     const openaiDuration = Date.now() - openaiStart;
     console.log(`✅ [${imageId}] OpenAI API completed in ${openaiDuration}ms`);
-    console.log(`💰 [${imageId}] Usage: ${response.usage?.prompt_tokens || 'unknown'} prompt tokens, ${response.usage?.completion_tokens || 'unknown'} completion tokens`);
+    console.log(`💰 [${imageId}] Usage: ${response.usage?.input_tokens || 'unknown'} input tokens, ${response.usage?.output_tokens || 'unknown'} output tokens`);
 
     // Parse the response
-    const responseText = response.choices[0]?.message?.content || '';
+    const responseText = response.output_text || '';
     console.log(`📥 [${imageId}] Raw response length: ${responseText.length} characters`);
 
     let analysisResult: AnalysisResult;

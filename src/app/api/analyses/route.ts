@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAnalysisResults } from "@/lib/database";
+import { getAnalysisResults, filterAnalyses } from "@/lib/database";
 
 export async function GET(request: Request) {
   const startTime = Date.now();
@@ -8,18 +8,42 @@ export async function GET(request: Request) {
   console.log(`📊 [${requestId}] Fetching analysis results from database`);
 
   try {
-    const limit = new URL(request.url).searchParams.get('limit');
-    const parsedLimit = limit ? parseInt(limit) : 50;
+    const { searchParams } = new URL(request.url);
+    const limit = searchParams.get('limit');
+    const offset = searchParams.get('offset');
+    const filter = searchParams.get('filter');
 
-    const analyses = await getAnalysisResults(parsedLimit);
+    const parsedLimit = Math.min(limit ? parseInt(limit) : 10, 100); // Max 100 per page
+    const parsedOffset = offset ? parseInt(offset) : 0;
+    const shouldFilter = filter === 'true';
+
+    const analyses = await getAnalysisResults(parsedLimit, parsedOffset);
+
+    // Debug: Log first few entries to understand data structure
+    if (shouldFilter) {
+      console.log('🔍 DEBUG: First 3 entries before filtering:');
+      analyses.slice(0, 3).forEach((analysis, i) => {
+        console.log(`Entry ${i + 1}:`, {
+          id: analysis.id,
+          bristol_score: analysis.bristol_score,
+          analysis: analysis.analysis ? analysis.analysis.substring(0, 100) + '...' : null,
+          has_analysis: !!analysis.analysis,
+          created_at: analysis.created_at
+        });
+      });
+    }
+
+    const filteredAnalyses = shouldFilter ? await filterAnalyses(analyses) : analyses;
 
     const duration = Date.now() - startTime;
-    console.log(`✅ [${requestId}] Successfully fetched ${analyses.length} analyses in ${duration}ms`);
+    console.log(`✅ [${requestId}] Successfully fetched ${analyses.length} analyses, filtered to ${filteredAnalyses.length} in ${duration}ms`);
 
     return NextResponse.json({
       ok: true,
-      analyses,
-      count: analyses.length,
+      analyses: filteredAnalyses,
+      count: filteredAnalyses.length,
+      offset: parsedOffset,
+      limit: parsedLimit,
     });
 
   } catch (error) {

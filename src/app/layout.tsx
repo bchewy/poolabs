@@ -1,22 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Poolabs · Smart Bathroom Observatory",
+  title: "PooLabs · Simple Digestive Health Tracking",
   description:
-    "Hackathon-ready platform that ingests ESP32 smart toilet captures, scores stool health, and nudges caregivers in real-time.",
+    "Easy-to-use app that helps you understand your digestive health. Just snap a photo and get instant insights about your poop.",
 };
 
 export default function RootLayout({
@@ -25,47 +21,109 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-zinc-50 dark:bg-black">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-emerald-50 via-white to-sky-50 text-zinc-900 dark:from-black dark:via-zinc-950 dark:to-emerald-950 dark:text-zinc-100`}
-      >
-        <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-12 pt-8 sm:px-8 lg:px-12">
-          <header className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <Link href="/" className="text-2xl font-semibold tracking-tight">
-                Poolabs Guardian
-              </Link>
-              <p className="mt-1 max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
-                Smart toilet bowl analytics for ageing-in-place. Built for hackathon demos — privacy-first, ESP32-friendly, and caregiver ready.
-              </p>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <div className="min-h-screen grid-pattern">
+          {/* Header */}
+          <header className="sticky top-0 z-40 glass border-b border-white/10 backdrop-blur-xl">
+            <div className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:px-12">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-8">
+                  <Link
+                    href="/"
+                    className="flex items-center space-x-3 group transition-smooth"
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-smooth">
+                      <span className="text-white font-bold text-sm">P</span>
+                    </div>
+                    <span className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 transition-smooth">
+                      PooLabs
+                    </span>
+                  </Link>
+                  <nav className="hidden md:flex items-center space-x-6">
+                    <Link
+                      href="/"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-smooth relative group"
+                    >
+                      Home
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <Link
+                      href="/upload-test"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-smooth relative group"
+                    >
+                      Analyze
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <Link
+                      href="/database-dashboard"
+                      className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-smooth relative group"
+                    >
+                      My History
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                  </nav>
+                </div>
+
+                {/* Mobile menu button would go here */}
+                <div className="flex items-center space-x-4">
+                  <div className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
+                    v1.0 • Simple & Private
+                  </div>
+                </div>
+              </div>
             </div>
-            <nav className="flex items-center gap-3 text-sm font-medium">
-              <Link
-                href="/"
-                className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-emerald-600 shadow-sm transition hover:-translate-y-1 hover:bg-emerald-500/20 hover:text-emerald-700 dark:text-emerald-300"
-              >
-                Home
-              </Link>
-              <Link
-                href="/upload-test"
-                className="rounded-full border border-purple-500/40 bg-purple-500/10 px-4 py-2 text-purple-600 shadow-sm transition hover:-translate-y-1 hover:bg-purple-500/20 hover:text-purple-700 dark:text-purple-300"
-              >
-                Try AI Demo
-              </Link>
-              <Link
-                href="/database-dashboard"
-                className="rounded-full border border-orange-500/40 bg-orange-500/10 px-4 py-2 text-orange-600 shadow-sm transition hover:-translate-y-1 hover:bg-orange-500/20 hover:text-orange-700 dark:text-orange-300"
-              >
-                Results Dashboard
-              </Link>
-            </nav>
           </header>
 
-          <main className="mt-10 flex-1">{children}</main>
+          {/* Main Content */}
+          <main className="flex-1">
+            {children}
+          </main>
 
-          <footer className="mt-14 flex flex-col gap-2 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between dark:text-zinc-500">
-            <span>Poolabs · Hackathon 2024</span>
-            <span>Ageing population · Sleep hygiene · Smart sanitation</span>
+          {/* Footer */}
+          <footer className="border-t border-white/10 bg-black/5 backdrop-blur-xl">
+            <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">PooLabs</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Simple app that helps people of all ages understand their digestive health through easy photo analysis.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Features</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">
+                      Easy Analysis
+                    </span>
+                    <span className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
+                      Family Friendly
+                    </span>
+                    <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full">
+                      Health Tracking
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">For Everyone</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    Made for the whole family - simple enough for anyone to use, private enough to trust.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-8 pt-6 border-t border-white/10">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    © 2024 PooLabs. Made for families everywhere.
+                  </p>
+                  <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+                    <span>Privacy First</span>
+                    <span>Family Safe</span>
+                    <span>Easy to Use</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </footer>
         </div>
       </body>
