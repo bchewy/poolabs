@@ -42,27 +42,21 @@ export default function RootLayout({
             <nav className="flex items-center gap-3 text-sm font-medium">
               <Link
                 href="/"
-                className="rounded-full border border-transparent bg-white px-4 py-2 text-zinc-800 shadow-sm transition hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-lg dark:bg-zinc-900 dark:text-zinc-100"
-              >
-                Overview
-              </Link>
-              <Link
-                href="/dashboard"
                 className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-emerald-600 shadow-sm transition hover:-translate-y-1 hover:bg-emerald-500/20 hover:text-emerald-700 dark:text-emerald-300"
               >
-                Live dashboard
+                Home
               </Link>
               <Link
                 href="/upload-test"
                 className="rounded-full border border-purple-500/40 bg-purple-500/10 px-4 py-2 text-purple-600 shadow-sm transition hover:-translate-y-1 hover:bg-purple-500/20 hover:text-purple-700 dark:text-purple-300"
               >
-                AI Upload Test
+                Try AI Demo
               </Link>
               <Link
                 href="/database-dashboard"
                 className="rounded-full border border-orange-500/40 bg-orange-500/10 px-4 py-2 text-orange-600 shadow-sm transition hover:-translate-y-1 hover:bg-orange-500/20 hover:text-orange-700 dark:text-orange-300"
               >
-                Database Dashboard
+                Results Dashboard
               </Link>
             </nav>
           </header>
