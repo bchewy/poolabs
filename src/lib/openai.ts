@@ -29,7 +29,7 @@ export async function analyzeStoolImage({
   notes,
 }: AnalysisInput): Promise<AnalysisResult> {
   const startTime = Date.now();
-  const imageId = Math.random().toString(36).substr(2, 9);
+  const imageId = Math.random().toString(36).substring(2, 11);
 
   console.log(`🚀 [${imageId}] Starting OpenAI stool analysis...`);
   console.log(`📊 [${imageId}] Image details: ${Math.round(imageBuffer.length / 1024)}KB, ${mimeType}`);

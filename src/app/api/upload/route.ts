@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { analyzeStoolImage } from "@/lib/openai";
+
+let analyzeStoolImage: any;
+try {
+  analyzeStoolImage = require("@/lib/openai").analyzeStoolImage;
+} catch (error) {
+  console.log("OpenAI module not available, using fallback");
+}
 
 export async function POST(request: Request) {
   const startTime = Date.now();
@@ -43,27 +49,42 @@ export async function POST(request: Request) {
     const analysisStart = Date.now();
 
     let aiAnalysis = null;
-    try {
-      aiAnalysis = await analyzeStoolImage({
-        imageBuffer,
-        mimeType: image.type,
-        deviceId: meta.deviceId,
-        notes: meta.notes,
-      });
+    if (analyzeStoolImage) {
+      try {
+        aiAnalysis = await analyzeStoolImage({
+          imageBuffer,
+          mimeType: image.type,
+          deviceId: meta.deviceId,
+          notes: meta.notes,
+        });
 
-      const analysisDuration = Date.now() - analysisStart;
-      console.log(`✅ [${requestId}] AI analysis completed in ${analysisDuration}ms`);
+        const analysisDuration = Date.now() - analysisStart;
+        console.log(`✅ [${requestId}] AI analysis completed in ${analysisDuration}ms`);
 
-      if (aiAnalysis.analysis && !aiAnalysis.analysis.includes('fallback')) {
-        console.log(`🎉 [${requestId}] Real OpenAI analysis successful!`);
-      } else {
-        console.log(`⚠️ [${requestId}] Using fallback analysis`);
+        if (aiAnalysis.analysis && !aiAnalysis.analysis.includes('fallback')) {
+          console.log(`🎉 [${requestId}] Real OpenAI analysis successful!`);
+        } else {
+          console.log(`⚠️ [${requestId}] Using fallback analysis`);
+        }
+
+      } catch (error) {
+        const analysisDuration = Date.now() - analysisStart;
+        console.error(`❌ [${requestId}] OpenAI analysis failed after ${analysisDuration}ms:`, error);
+        // Fallback analysis will be handled by the analyzeStoolImage function
       }
-
-    } catch (error) {
+    } else {
+      // Use fallback analysis if OpenAI module isn't available
       const analysisDuration = Date.now() - analysisStart;
-      console.error(`❌ [${requestId}] OpenAI analysis failed after ${analysisDuration}ms:`, error);
-      // Fallback analysis will be handled by the analyzeStoolImage function
+      console.log(`⚠️ [${requestId}] OpenAI not available, using fallback after ${analysisDuration}ms`);
+      aiAnalysis = {
+        bristolScore: 3,
+        color: "brown",
+        volumeEstimate: "medium",
+        hydrationIndex: 0.7,
+        flags: ["normal"],
+        confidence: 0.5,
+        analysis: "AI analysis unavailable - OpenAI not configured. Using fallback assessment.",
+      };
     }
 
     const totalDuration = Date.now() - startTime;
