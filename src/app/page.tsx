@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   Brain,
@@ -19,14 +19,15 @@ import {
   TestTube
 } from "lucide-react";
 import LiquidEther from "@/components/LiquidEther";
+import FAQ from "@/components/FAQ";
 
 export default function Home() {
-  const [isPoopTheme, setIsPoopTheme] = useState(true); // Always use poop theme
+  const [isPoopTheme] = useState(true); // Always use poop theme
 
   return (
     <div className="min-h-screen relative">
       {/* Liquid Ether Background */}
-      <div className="fixed inset-0" style={{ zIndex: 1 }}>
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
         <LiquidEther
           key="liquid-ether-bg"
           colors={['#8B4513', '#D2691E', '#CD853F']}
@@ -56,7 +57,7 @@ export default function Home() {
         isPoopTheme
           ? 'bg-gradient-to-br from-amber-50/20 via-white/10 to-amber-50/20 dark:from-gray-900/20 dark:via-gray-950/10 dark:to-amber-950/20'
           : 'bg-gradient-to-br from-blue-50/20 via-white/10 to-blue-50/20 dark:from-gray-900/20 dark:via-gray-950/10 dark:to-blue-950/20'
-      }`}>
+      }`} style={{ zIndex: 10 }}>
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
           <div className="text-center animate-slide-up">
@@ -108,7 +109,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-24 bg-white/70 dark:bg-gray-900/50 backdrop-blur-sm">
+      <section className="py-24 bg-white/70 dark:bg-gray-900/50 backdrop-blur-sm relative" style={{ zIndex: 10 }}>
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl text-center animate-scale-in">
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl text-amber-700 dark:text-amber-300">
@@ -154,7 +155,7 @@ export default function Home() {
       </section>
 
     {/* Why PooLabs Section */}
-      <section className="py-24 bg-gray-50/70 dark:bg-gray-900/30 backdrop-blur-sm">
+      <section className="py-24 bg-gray-50/70 dark:bg-gray-900/30 backdrop-blur-sm relative" style={{ zIndex: 10 }}>
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-6 py-2 text-sm font-semibold text-white">
@@ -240,7 +241,7 @@ export default function Home() {
       </section>
 
       {/* Perfect For Everyone */}
-      <section className="py-24 bg-white/70 dark:bg-gray-900/50 backdrop-blur-sm">
+      <section className="py-24 bg-white/70 dark:bg-gray-900/50 backdrop-blur-sm relative" style={{ zIndex: 10 }}>
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
@@ -293,8 +294,11 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <FAQ />
+
       {/* CTA Section */}
-      <section className="py-32 bg-gradient-to-r from-amber-600/90 to-amber-700/90 backdrop-blur-sm relative overflow-hidden">
+      <section className="py-32 bg-gradient-to-r from-amber-600/90 to-amber-700/90 backdrop-blur-sm relative overflow-hidden" style={{ zIndex: 10 }}>
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative mx-auto max-w-4xl px-6 sm:px-8 lg:px-12 text-center">
           <div className="animate-scale-in">

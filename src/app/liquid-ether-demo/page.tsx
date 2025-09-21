@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import LiquidEtherBackground from "@/components/LiquidEtherBackground";
 import LiquidEtherBackgroundEnhanced from "@/components/LiquidEtherBackgroundEnhanced";
 
@@ -90,7 +91,7 @@ export default function LiquidEtherDemo() {
                   </label>
                   <select
                     value={selectedTheme}
-                    onChange={(e) => setSelectedTheme(e.target.value as any)}
+                    onChange={(e) => setSelectedTheme(e.target.value as 'health' | 'ocean' | 'forest' | 'sunset')}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   >
                     <option value="health">Health (Amber/Green)</option>
@@ -109,7 +110,7 @@ export default function LiquidEtherDemo() {
                   </label>
                   <select
                     value={intensity}
-                    onChange={(e) => setIntensity(e.target.value as any)}
+                    onChange={(e) => setIntensity(e.target.value as 'subtle' | 'medium' | 'strong')}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   >
                     <option value="subtle">Subtle</option>
@@ -261,12 +262,12 @@ export default function LiquidEtherDemo() {
 
           {/* Links */}
           <div className="text-center mt-8">
-            <a
+            <Link
               href="/"
               className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
             >
               ← Back to PooLabs
-            </a>
+            </Link>
           </div>
         </div>
       </div>

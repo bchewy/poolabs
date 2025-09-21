@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import React from "react";
 import {
-  Microchip, Wifi, Bluetooth, Battery, Smartphone,
-  Activity, Heart, Droplets, Shield, Cloud,
+  Microchip, Smartphone,
+  Activity, Heart, Shield, Droplets,
   Database, BarChart3, MapPin, Users, Bell,
-  Zap, Settings, Target, Rocket, Star,
-  ArrowRight, ArrowLeft, Calendar, Clock, X, Brain
+  Rocket, Star,
+  ArrowRight, ArrowLeft, Calendar, X, Brain
 } from "lucide-react";
 
 interface RoadmapFeature {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   category: string;
   difficulty: "easy" | "medium" | "hard";
   timeline: string;
@@ -361,7 +362,7 @@ export default function RoadmapPage() {
                   const dateOrder = ["Q1 2024", "Q2 2024", "Q3 2024", "Q4 2024", "Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025", "Q1 2026"];
                   return dateOrder.indexOf(a.timeline) - dateOrder.indexOf(b.timeline);
                 })
-                .map((feature, index) => {
+                .map((feature) => {
                   const yearIndex = feature.timeline.includes("2024") ? 0 : feature.timeline.includes("2025") ? 1 : 2;
                   const yearColors = ["bg-purple-600", "bg-blue-600", "bg-green-600"];
 
@@ -537,7 +538,7 @@ export default function RoadmapPage() {
             Join the Health Monitoring Revolution
           </h2>
           <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-            We're building the future of discreet health monitoring.
+            We&apos;re building the future of discreet health monitoring.
             Be part of the journey to improve senior care through innovative technology.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

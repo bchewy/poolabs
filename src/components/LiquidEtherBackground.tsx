@@ -37,7 +37,7 @@ const LiquidEtherBackground: React.FC<LiquidEtherBackgroundProps> = ({
   interactive = true
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [blobs, setBlobs] = useState<Blob[]>([]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -102,7 +102,8 @@ const LiquidEtherBackground: React.FC<LiquidEtherBackgroundProps> = ({
 
       // Update blob positions
       const updatedBlobs = blobs.map(blob => {
-        let { x, y, vx, vy, radius } = blob;
+        const { radius } = blob;
+        let { x, y, vx, vy } = blob;
 
         // Mouse interaction
         if (interactive) {

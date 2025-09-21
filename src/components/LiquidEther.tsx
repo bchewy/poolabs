@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './LiquidEther.css';
 
+type ShaderProps = Record<string, any>;
+type UniformValue = any;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface LiquidEtherProps {
   mouseForce?: number;
   cursorSize?: number;
@@ -563,10 +568,10 @@ export default function LiquidEther({
 }
 `;
 
-    type Uniforms = Record<string, { value: any }>;
+    type Uniforms = Record<string, { value: UniformValue }>;
 
     class ShaderPass {
-      props: any;
+      props: ShaderProps;
       uniforms?: Uniforms;
       scene: THREE.Scene | null = null;
       camera: THREE.Camera | null = null;

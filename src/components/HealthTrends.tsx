@@ -364,7 +364,7 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Bristol Score Trend</h3>
-            <InfoTooltip content="Bristol Stool Scale (1-7): 1-2=Constipation, 3-4=Optimal, 5-7=Diarrhea. This chart shows your stool consistency patterns over time.">
+            <InfoTooltip content="Bristol Stool Scale (1-7) medical classification: Types 3-4 indicate optimal digestive health, 1-2 suggest constipation, 5-7 indicate loose stool/diarrhea. Hover over bars for detailed explanations of each type.">
               <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600" />
             </InfoTooltip>
           </div>
@@ -390,23 +390,93 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
                   }}
                   itemStyle={{ color: '#fff' }}
                   formatter={(value: number, name: string) => {
-                    const bristolLabels: Record<number, string> = {
-                      1: 'Severe constipation',
-                      2: 'Constipation',
-                      3: 'Optimal',
-                      4: 'Optimal',
-                      5: 'Borderline loose',
-                      6: 'Loose stool',
-                      7: 'Diarrhea'
+                    const bristolInfo: Record<number, { label: string; description: string; color: string; health: string }> = {
+                      1: {
+                        label: 'Type 1: Hard Lumps',
+                        description: 'Severe constipation. Difficult to pass, indicates very slow transit time.',
+                        color: '#ef4444',
+                        health: 'Needs attention'
+                      },
+                      2: {
+                        label: 'Type 2: Lumpy Sausage',
+                        description: 'Constipation. Indicates lack of fiber and dehydration.',
+                        color: '#f97316',
+                        health: 'Mild concern'
+                      },
+                      3: {
+                        label: 'Type 3: Cracked Sausage',
+                        description: 'Optimal. Normal healthy stool with slight cracks on surface.',
+                        color: '#10b981',
+                        health: 'Healthy'
+                      },
+                      4: {
+                        label: 'Type 4: Smooth Sausage',
+                        description: 'Perfect health. Ideal stool shape and consistency.',
+                        color: '#059669',
+                        health: 'Excellent'
+                      },
+                      5: {
+                        label: 'Type 5: Soft Blobs',
+                        description: 'Borderline loose. May indicate lack of fiber.',
+                        color: '#eab308',
+                        health: 'Normal'
+                      },
+                      6: {
+                        label: 'Type 6: Mushy',
+                        description: 'Loose stool. Borderline diarrhea, may indicate mild infection.',
+                        color: '#f97316',
+                        health: 'Mild concern'
+                      },
+                      7: {
+                        label: 'Type 7: Liquid',
+                        description: 'Diarrhea. Indicates rapid transit through intestines.',
+                        color: '#ef4444',
+                        health: 'Needs attention'
+                      }
                     };
-                    return [`${value} - ${bristolLabels[value as keyof typeof bristolLabels] || 'Unknown'}`, 'Bristol Score'];
+
+                    const info = bristolInfo[value as keyof typeof bristolInfo];
+                    return [
+                      <div key="bristol-tooltip" className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-4 h-4 rounded-full border-2 border-white"
+                            style={{ backgroundColor: info.color }}
+                          />
+                          <span className="font-semibold">{info.label}</span>
+                        </div>
+                        <div className="text-xs opacity-90">{info.description}</div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs">Health:</span>
+                          <span className={`text-xs font-medium ${
+                            info.health === 'Excellent' || info.health === 'Healthy' ? 'text-green-400' :
+                            info.health === 'Normal' ? 'text-yellow-400' :
+                            'text-orange-400'
+                          }`}>
+                            {info.health}
+                          </span>
+                        </div>
+                      </div>,
+                      'Bristol Score'
+                    ];
                   }}
                   labelFormatter={(label) => `Date: ${label}`}
                 />
                 <Bar
                   dataKey="bristolScore"
-                  fill="#10b981"
                   radius={[2, 2, 0, 0]}
+                  fill={(entry: any) => {
+                    const colors = {
+                      1: '#ef4444',
+                      2: '#f97316',
+                      3: '#10b981',
+                      4: '#059669',
+                      5: '#eab308',
+                      6: '#f97316',
+                      7: '#ef4444'
+                    };
+                    return colors[entry.bristolScore as keyof typeof colors] || '#6b7280';
+                  }}
                 />
               </BarChart>
             </ResponsiveContainer>

@@ -81,14 +81,14 @@ const LiquidEtherBackgroundEnhanced: React.FC<LiquidEtherBackgroundEnhancedProps
   particleCount = 20
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [blobs, setBlobs] = useState<Blob[]>([]);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [time, setTime] = useState(0);
 
-  const colors = customColors || colorThemes[theme];
+  const colors = customColors || (theme !== 'custom' ? colorThemes[theme] : colorThemes.health);
 
   const intensitySettings = {
     subtle: { opacity: 0.3, connectionOpacity: 0.1, particleOpacity: 0.2 },
@@ -180,7 +180,8 @@ const LiquidEtherBackgroundEnhanced: React.FC<LiquidEtherBackgroundEnhancedProps
 
       // Update and draw particles
       const updatedParticles = particles.map(particle => {
-        let { x, y, vx, vy, size, opacity, color } = particle;
+        const { size, opacity, color, vx, vy } = particle;
+        let { x, y } = particle;
 
         x += vx;
         y += vy;
@@ -205,7 +206,8 @@ const LiquidEtherBackgroundEnhanced: React.FC<LiquidEtherBackgroundEnhancedProps
 
       // Update blob positions
       const updatedBlobs = blobs.map(blob => {
-        let { x, y, vx, vy, radius, originalRadius, pulsePhase } = blob;
+        const { radius, originalRadius, pulsePhase } = blob;
+        let { x, y, vx, vy } = blob;
 
         // Mouse interaction
         if (interactive) {
