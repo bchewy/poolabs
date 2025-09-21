@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS analysis_results (
   flags TEXT[],
   confidence REAL CHECK (confidence >= 0 AND confidence <= 1),
   analysis TEXT,
+  gut_health_insights JSONB,
+  medical_interpretation JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -22,6 +24,11 @@ CREATE INDEX IF NOT EXISTS idx_analysis_results_device_id ON analysis_results(de
 
 -- Create index for faster queries by creation time
 CREATE INDEX IF NOT EXISTS idx_analysis_results_created_at ON analysis_results(created_at DESC);
+
+-- Add columns for enhanced analysis (if they don't exist)
+ALTER TABLE analysis_results
+ADD COLUMN IF NOT EXISTS gut_health_insights JSONB,
+ADD COLUMN IF NOT EXISTS medical_interpretation JSONB;
 
 -- Enable RLS (Row Level Security)
 ALTER TABLE analysis_results ENABLE ROW LEVEL SECURITY;

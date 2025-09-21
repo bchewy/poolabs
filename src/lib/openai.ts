@@ -12,6 +12,21 @@ interface AnalysisInput {
   notes?: string;
 }
 
+interface GutHealthInsights {
+  digestionStatus: string;
+  dietaryImplications: string;
+  potentialIssues: string[];
+  recommendations: string[];
+  followUpActions: string[];
+}
+
+interface MedicalInterpretation {
+  possibleConditions: string[];
+  urgencyLevel: "low" | "medium" | "high";
+  whenToConsultDoctor: string;
+  redFlags: string[];
+}
+
 interface AnalysisResult {
   bristolScore?: number;
   color?: string;
@@ -20,6 +35,8 @@ interface AnalysisResult {
   flags?: string[];
   confidence?: number;
   analysis?: string;
+  gutHealthInsights?: GutHealthInsights;
+  medicalInterpretation?: MedicalInterpretation;
 }
 
 export async function analyzeStoolImage({
@@ -43,7 +60,7 @@ export async function analyzeStoolImage({
 
     console.log(`🔄 [${imageId}] Image converted to base64, sending to OpenAI...`);
 
-    const systemPrompt = `You are a medical AI assistant specializing in stool analysis for health monitoring. Analyze this toilet bowl image and provide detailed health insights.
+    const systemPrompt = `You are a medical AI assistant specializing in comprehensive stool analysis for gut health monitoring. Analyze this toilet bowl image and provide detailed, actionable health insights.
 
 Please analyze the stool and provide a JSON response with the following structure:
 {
@@ -53,37 +70,65 @@ Please analyze the stool and provide a JSON response with the following structur
   "hydrationIndex": number (0-1, where 0=dehydrated, 1=well-hydrated),
   "flags": string[] (health concerns like ["constipation", "dehydration", "blood", "infection", "normal"]),
   "confidence": number (0-1, confidence in your analysis),
-  "analysis": string (detailed explanation of findings)
+  "analysis": string (brief summary of key findings),
+  "gutHealthInsights": {
+    "digestionStatus": string (detailed assessment of digestive health),
+    "dietaryImplications": string (what diet might be causing this),
+    "potentialIssues": string[] (possible gut health concerns),
+    "recommendations": string[] (actionable dietary and lifestyle changes),
+    "followUpActions": string[] (specific steps to take and monitor)
+  },
+  "medicalInterpretation": {
+    "possibleConditions": string[] (potential medical interpretations),
+    "urgencyLevel": "low" | "medium" | "high",
+    "whenToConsultDoctor": string (specific guidelines),
+    "redFlags": string[] (symptoms that require immediate attention)
+  }
 }
 
 Bristol Scale Reference:
-1: Hard lumps like nuts (severe constipation)
-2: Sausage-shaped but lumpy (constipation)
-3: Like a sausage but with cracks on surface (optimal)
-4: Like a sausage or snake, smooth and soft (optimal)
-5: Soft blobs with clear-cut edges (borderline loose)
-6: Mushy consistency with ragged edges (loose stool)
-7: Liquid consistency with no solid pieces (diarrhea)
+1: Hard lumps like nuts (severe constipation) - indicates slow transit, possible dehydration
+2: Sausage-shaped but lumpy (mild constipation) - needs more fiber and water
+3: Like a sausage but with cracks on surface (optimal) - healthy digestion
+4: Like a sausage or snake, smooth and soft (optimal) - excellent gut health
+5: Soft blobs with clear-cut edges (borderline loose) - consider reducing irritants
+6: Mushy consistency with ragged edges (loose stool) - may indicate infection or intolerance
+7: Liquid consistency with no solid pieces (diarrhea) - requires hydration and possible medical attention
 
 Color Analysis:
-- Brown: Normal
-- Light brown: Normal
-- Dark brown: Normal
-- Green: Could indicate rapid transit or diet
-- Yellow: Could indicate fat malabsorption
-- Black: Could indicate upper GI bleeding
-- Red: Could indicate lower GI bleeding
+- Brown: Normal healthy stool
+- Light brown: Normal, may indicate high fiber diet
+- Dark brown: Normal, may indicate high iron or meat consumption
+- Green: Rapid transit, diet high in greens, or possible bacterial imbalance
+- Yellow: Fat malabsorption, celiac disease, or pancreatic issues
+- Black: Upper GI bleeding, iron supplements, or certain medications
+- Red: Lower GI bleeding, hemorrhoids, or certain foods (beets, cranberries)
 
-Be conservative in your assessments and flag anything unusual for medical attention. If you cannot make a confident assessment, indicate low confidence.
+Medical Context:
+- Bristol 1-2: Constipation - IBS-C, hypothyroidism, medication side effects
+- Bristol 3-4: Normal - healthy gut function
+- Bristol 5-7: Diarrhea - IBS-D, infections, food intolerances, IBD
+- Unusual colors: May indicate malabsorption, bleeding, or medical conditions
+
+Actionable Insights:
+- Dietary recommendations based on stool characteristics
+- Hydration guidance
+- When to seek medical attention
+- Lifestyle modifications
+- Gut health optimization strategies
+
+Be thorough but conservative in your assessments. Provide specific, actionable advice while flagging anything unusual for potential medical attention.
 
 ${notes ? `Additional user notes: ${notes}` : ''}`;
 
     // Use OpenAI's Responses API with vision capabilities
-    console.log(`🤖 [${imageId}] Calling OpenAI Responses API with GPT-5...`);
+    const modelName = "gpt-4o-mini"; // Faster model for quicker analysis
+    console.log(`🤖 [${imageId}] Calling OpenAI Responses API with model: ${modelName}`);
+    console.log(`📊 [${imageId}] Model details: gpt-4o-mini - Latest fast multimodal model`);
     const openaiStart = Date.now();
 
     const response = await openai.responses.create({
-      model: "gpt-5",
+      model: modelName,
       input: [
         {
           role: "system",
@@ -113,7 +158,10 @@ ${notes ? `Additional user notes: ${notes}` : ''}`;
 
     const openaiDuration = Date.now() - openaiStart;
     console.log(`✅ [${imageId}] OpenAI API completed in ${openaiDuration}ms`);
+    console.log(`🎯 [${imageId}] Model used: ${modelName}`);
     console.log(`💰 [${imageId}] Usage: ${response.usage?.input_tokens || 'unknown'} input tokens, ${response.usage?.output_tokens || 'unknown'} output tokens`);
+    console.log(`⚡ [${imageId}] Performance: ${response.usage?.input_tokens && response.usage?.output_tokens ?
+      Math.round((response.usage.input_tokens + response.usage.output_tokens) / (openaiDuration / 1000)) : 'unknown'} tokens/second`);
 
     // Parse the response
     const responseText = response.output_text || '';
@@ -156,6 +204,20 @@ ${notes ? `Additional user notes: ${notes}` : ''}`;
       confidence: analysisResult.confidence !== undefined ?
                  Math.max(0, Math.min(1, analysisResult.confidence)) : undefined,
       analysis: analysisResult.analysis || "Analysis completed but no detailed summary provided.",
+      gutHealthInsights: analysisResult.gutHealthInsights ? {
+        digestionStatus: analysisResult.gutHealthInsights.digestionStatus || "Unable to determine digestion status",
+        dietaryImplications: analysisResult.gutHealthInsights.dietaryImplications || "No dietary implications identified",
+        potentialIssues: Array.isArray(analysisResult.gutHealthInsights.potentialIssues) ? analysisResult.gutHealthInsights.potentialIssues : [],
+        recommendations: Array.isArray(analysisResult.gutHealthInsights.recommendations) ? analysisResult.gutHealthInsights.recommendations : [],
+        followUpActions: Array.isArray(analysisResult.gutHealthInsights.followUpActions) ? analysisResult.gutHealthInsights.followUpActions : [],
+      } : undefined,
+      medicalInterpretation: analysisResult.medicalInterpretation ? {
+        possibleConditions: Array.isArray(analysisResult.medicalInterpretation.possibleConditions) ? analysisResult.medicalInterpretation.possibleConditions : [],
+        urgencyLevel: ["low", "medium", "high"].includes(analysisResult.medicalInterpretation.urgencyLevel || "") ?
+                        analysisResult.medicalInterpretation.urgencyLevel as "low" | "medium" | "high" : "low",
+        whenToConsultDoctor: analysisResult.medicalInterpretation.whenToConsultDoctor || "No specific guidance provided",
+        redFlags: Array.isArray(analysisResult.medicalInterpretation.redFlags) ? analysisResult.medicalInterpretation.redFlags : [],
+      } : undefined,
     };
 
     console.log(`📊 [${imageId}] Final analysis result:`);
@@ -189,7 +251,8 @@ ${notes ? `Additional user notes: ${notes}` : ''}`;
       analysis: "AI analysis unavailable. Using fallback assessment.",
     };
 
-    console.log(`🔄 [${imageId}] Fallback result provided:`, fallbackResult);
+    console.log(`🔄 [${imageId}] Fallback result provided - no API call made`);
+    console.log(`⚠️ [${imageId}] Using mock data due to API failure`);
     return fallbackResult;
   }
 }

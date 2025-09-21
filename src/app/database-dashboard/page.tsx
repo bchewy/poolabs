@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { StoredAnalysis } from "@/lib/database";
-import { Brain, Calendar, Smartphone, Droplets, Scale, AlertTriangle, ChevronLeft, ChevronRight, Image as ImageIcon, BarChart3, Filter, Users } from "lucide-react";
+import { Brain, Calendar, Smartphone, Droplets, Scale, AlertTriangle, ChevronLeft, ChevronRight, Image as ImageIcon, BarChart3, Filter, Users, Heart } from "lucide-react";
 import { ImageModal } from "@/components/ImageModal";
 import Image from "next/image";
 
@@ -50,6 +50,28 @@ export default function DatabaseDashboardPage() {
   const [totalItems, setTotalItems] = useState(0);
   const [itemsPerPage] = useState(10);
   const [filterEnabled, setFilterEnabled] = useState(true);
+  const [isPoopTheme, setIsPoopTheme] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const currentTheme = localStorage.getItem("poolabs-theme");
+      setIsPoopTheme(currentTheme === "Poop Fun");
+    };
+
+    // Check initially
+    checkTheme();
+
+    // Listen for theme changes
+    window.addEventListener("storage", checkTheme);
+    window.addEventListener("themeChange", ((e: CustomEvent) => {
+      setIsPoopTheme(e.detail === "Poop Fun");
+    }) as EventListener);
+
+    return () => {
+      window.removeEventListener("storage", checkTheme);
+      window.removeEventListener("themeChange", checkTheme as EventListener);
+    };
+  }, []);
 
   // Modal state
   const [selectedImage, setSelectedImage] = useState<{
@@ -132,10 +154,24 @@ export default function DatabaseDashboardPage() {
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center animate-scale-in">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Brain className="h-8 w-8 text-blue-600 dark:text-blue-400 animate-pulse" />
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                isPoopTheme
+                  ? 'bg-amber-100 dark:bg-amber-900/30'
+                  : 'bg-blue-100 dark:bg-blue-900/30'
+              }`}>
+                <Brain className={`h-8 w-8 animate-pulse ${
+                  isPoopTheme
+                    ? 'text-amber-600 dark:text-amber-400'
+                    : 'text-blue-600 dark:text-blue-400'
+                }`} />
               </div>
-              <p className="text-gray-600 dark:text-gray-400">Loading your health history...</p>
+              <p className={`${
+                isPoopTheme
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-gray-600 dark:text-gray-400'
+              }`}>
+                {isPoopTheme ? 'Loading your poo history...' : 'Loading your health history...'}
+              </p>
             </div>
           </div>
         </div>
@@ -149,13 +185,29 @@ export default function DatabaseDashboardPage() {
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center animate-scale-in">
-              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                isPoopTheme
+                  ? 'bg-amber-100 dark:bg-amber-900/30'
+                  : 'bg-red-100 dark:bg-red-900/30'
+              }`}>
+                <AlertTriangle className={`h-8 w-8 ${
+                  isPoopTheme
+                    ? 'text-amber-600 dark:text-amber-400'
+                    : 'text-red-600 dark:text-red-400'
+                }`} />
               </div>
-              <p className="text-red-600 dark:text-red-400 font-medium">Error: {error}</p>
+              <p className={`font-medium ${
+                isPoopTheme
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-red-600 dark:text-red-400'
+              }`}>Error: {error}</p>
               <button
                 onClick={fetchAnalyses}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 px-6 py-2 text-sm font-semibold text-white transition-all hover:scale-105 rounded-full"
+                className={`mt-4 px-6 py-2 text-sm font-semibold text-white transition-all hover:scale-105 rounded-full ${
+                  isPoopTheme
+                    ? 'bg-amber-500 hover:bg-amber-600'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
                 Retry
               </button>
@@ -173,15 +225,32 @@ export default function DatabaseDashboardPage() {
         <div className="mb-8 animate-slide-up">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                <BarChart3 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                isPoopTheme
+                  ? 'bg-amber-100 dark:bg-amber-900/30'
+                  : 'bg-blue-100 dark:bg-blue-900/30'
+              }`}>
+                <BarChart3 className={`h-6 w-6 ${
+                  isPoopTheme
+                    ? 'text-amber-600 dark:text-amber-400'
+                    : 'text-blue-600 dark:text-blue-400'
+                }`} />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-                  My Health History
+                <h1 className={`text-4xl font-bold ${
+                  isPoopTheme
+                    ? 'text-amber-700 dark:text-amber-300'
+                    : 'text-gray-900 dark:text-white'
+                }`}>
+                  {isPoopTheme ? '💩 Database Dashboard' : 'Database Dashboard'}
                 </h1>
-                <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
-                  Track your digestive health journey over time
+                <p className={`mt-2 text-lg ${
+                  isPoopTheme
+                    ? 'text-amber-600 dark:text-amber-400'
+                    : 'text-gray-600 dark:text-gray-300'
+                }`}>
+                  View and manage all bowel movement records
+                  {isPoopTheme && <span className="ml-2">📊</span>}
                 </p>
               </div>
             </div>
@@ -283,6 +352,7 @@ export default function DatabaseDashboardPage() {
           </div>
         </div>
 
+  
         {/* Top Pagination Controls */}
         {totalPages > 1 && (
           <div className="mb-6 flex items-center justify-between animate-slide-up" style={{animationDelay: '0.2s'}}>
@@ -318,7 +388,9 @@ export default function DatabaseDashboardPage() {
                       onClick={() => handlePageChange(pageNum)}
                       className={`h-10 w-10 rounded-xl text-sm font-medium transition-all ${
                         currentPage === pageNum
-                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                          ? isPoopTheme
+                            ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/25'
+                            : 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
                           : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-105'
                       }`}
                     >
@@ -458,6 +530,125 @@ export default function DatabaseDashboardPage() {
                             </div>
                           )}
 
+                          {/* Gut Health Insights Section */}
+                          {analysis.gut_health_insights && (
+                            <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl border border-purple-200 dark:border-purple-800/30 mb-3">
+                              <p className="text-xs font-medium text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-2">
+                                <Heart className="h-4 w-4" />
+                                Gut Health Insights
+                              </p>
+
+                              {analysis.gut_health_insights.digestionStatus && (
+                                <div className="mb-2">
+                                  <p className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-1">Digestion Status</p>
+                                  <p className="text-sm text-purple-900 dark:text-purple-100">{analysis.gut_health_insights.digestionStatus}</p>
+                                </div>
+                              )}
+
+                              {analysis.gut_health_insights.dietaryImplications && (
+                                <div className="mb-2">
+                                  <p className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-1">Dietary Implications</p>
+                                  <p className="text-sm text-purple-900 dark:text-purple-100">{analysis.gut_health_insights.dietaryImplications}</p>
+                                </div>
+                              )}
+
+                              {analysis.gut_health_insights.potentialIssues && analysis.gut_health_insights.potentialIssues.length > 0 && (
+                                <div className="mb-2">
+                                  <p className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-1">Potential Issues</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {analysis.gut_health_insights.potentialIssues.map((issue, index) => (
+                                      <span key={index} className="px-2 py-1 bg-purple-200 dark:bg-purple-800/30 text-purple-800 dark:text-purple-200 text-xs rounded-full">
+                                        {issue}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {analysis.gut_health_insights.recommendations && analysis.gut_health_insights.recommendations.length > 0 && (
+                                <div className="mb-2">
+                                  <p className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-1">Recommendations</p>
+                                  <ul className="text-sm text-purple-900 dark:text-purple-100 space-y-1">
+                                    {analysis.gut_health_insights.recommendations.map((rec, index) => (
+                                      <li key={index} className="flex items-start gap-1">
+                                        <span className="text-purple-500 mt-1">•</span>
+                                        <span>{rec}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {analysis.gut_health_insights.followUpActions && analysis.gut_health_insights.followUpActions.length > 0 && (
+                                <div>
+                                  <p className="text-xs font-medium text-purple-600 dark:text-purple-400 mb-1">Follow-up Actions</p>
+                                  <ul className="text-sm text-purple-900 dark:text-purple-100 space-y-1">
+                                    {analysis.gut_health_insights.followUpActions.map((action, index) => (
+                                      <li key={index} className="flex items-start gap-1">
+                                        <span className="text-purple-500 mt-1">→</span>
+                                        <span>{action}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Medical Interpretation Section */}
+                          {analysis.medical_interpretation && (
+                            <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-xl border border-orange-200 dark:border-orange-800/30 mb-3">
+                              <p className="text-xs font-medium text-orange-700 dark:text-orange-300 mb-2 flex items-center gap-2">
+                                <AlertTriangle className="h-4 w-4" />
+                                Medical Interpretation
+                              </p>
+
+                              <div className="mb-2">
+                                <p className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-1">Urgency Level</p>
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  analysis.medical_interpretation.urgencyLevel === 'high' ? 'bg-red-200 text-red-800 dark:bg-red-800/30 dark:text-red-200' :
+                                  analysis.medical_interpretation.urgencyLevel === 'medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-200' :
+                                  'bg-green-200 text-green-800 dark:bg-green-800/30 dark:text-green-200'
+                                }`}>
+                                  {analysis.medical_interpretation.urgencyLevel?.toUpperCase()}
+                                </span>
+                              </div>
+
+                              {analysis.medical_interpretation.whenToConsultDoctor && (
+                                <div className="mb-2">
+                                  <p className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-1">When to Consult Doctor</p>
+                                  <p className="text-sm text-orange-900 dark:text-orange-100">{analysis.medical_interpretation.whenToConsultDoctor}</p>
+                                </div>
+                              )}
+
+                              {analysis.medical_interpretation.possibleConditions && analysis.medical_interpretation.possibleConditions.length > 0 && (
+                                <div className="mb-2">
+                                  <p className="text-xs font-medium text-orange-600 dark:text-orange-400 mb-1">Possible Conditions</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {analysis.medical_interpretation.possibleConditions.map((condition, index) => (
+                                      <span key={index} className="px-2 py-1 bg-orange-200 dark:bg-orange-800/30 text-orange-800 dark:text-orange-200 text-xs rounded-full">
+                                        {condition}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {analysis.medical_interpretation.redFlags && analysis.medical_interpretation.redFlags.length > 0 && (
+                                <div>
+                                  <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">Red Flags</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {analysis.medical_interpretation.redFlags.map((flag, index) => (
+                                      <span key={index} className="px-2 py-1 bg-red-200 dark:bg-red-800/30 text-red-800 dark:text-red-200 text-xs rounded-full">
+                                        {flag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
                           {analysis.device_id && (
                             <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800/40 p-2 rounded-lg">
                               <Smartphone className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -531,7 +722,9 @@ export default function DatabaseDashboardPage() {
                       onClick={() => handlePageChange(pageNum)}
                       className={`h-10 w-10 rounded-xl text-sm font-medium transition-all ${
                         currentPage === pageNum
-                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                          ? isPoopTheme
+                            ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/25'
+                            : 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
                           : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-105'
                       }`}
                     >

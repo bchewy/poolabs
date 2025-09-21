@@ -1,5 +1,20 @@
 import { supabase } from './supabase'
 
+export interface GutHealthInsights {
+  digestionStatus: string;
+  dietaryImplications: string;
+  potentialIssues: string[];
+  recommendations: string[];
+  followUpActions: string[];
+}
+
+export interface MedicalInterpretation {
+  possibleConditions: string[];
+  urgencyLevel: "low" | "medium" | "high";
+  whenToConsultDoctor: string;
+  redFlags: string[];
+}
+
 export interface AnalysisResult {
   bristolScore?: number;
   color?: string;
@@ -8,6 +23,8 @@ export interface AnalysisResult {
   flags?: string[];
   confidence?: number;
   analysis?: string;
+  gutHealthInsights?: GutHealthInsights;
+  medicalInterpretation?: MedicalInterpretation;
 }
 
 export interface StoredAnalysis {
@@ -25,6 +42,8 @@ export interface StoredAnalysis {
   flags?: string[]
   confidence?: number
   analysis?: string
+  gut_health_insights?: GutHealthInsights
+  medical_interpretation?: MedicalInterpretation
   created_at: string
 }
 
@@ -53,31 +72,70 @@ export async function storeAnalysisResult(
   // Normalize image data before storing to ensure consistency
   const normalizedImageData = normalizeImageDataForStorage(imageData, mimeType);
 
-  const { data, error } = await supabase
-    .from('analysis_results')
-    .insert([{
-      filename,
-      mime_type: mimeType,
-      size,
-      image_data: normalizedImageData,
-      device_id: deviceId,
-      notes,
-      bristol_score: aiAnalysis?.bristolScore,
-      color: aiAnalysis?.color,
-      volume_estimate: aiAnalysis?.volumeEstimate,
-      hydration_index: aiAnalysis?.hydrationIndex,
-      flags: aiAnalysis?.flags,
-      confidence: aiAnalysis?.confidence,
-      analysis: aiAnalysis?.analysis,
-    }])
-    .select()
-    .single()
+  // First try to insert with all fields
+  try {
+    const { data, error } = await supabase
+      .from('analysis_results')
+      .insert([{
+        filename,
+        mime_type: mimeType,
+        size,
+        image_data: normalizedImageData,
+        device_id: deviceId,
+        notes,
+        bristol_score: aiAnalysis?.bristolScore,
+        color: aiAnalysis?.color,
+        volume_estimate: aiAnalysis?.volumeEstimate,
+        hydration_index: aiAnalysis?.hydrationIndex,
+        flags: aiAnalysis?.flags,
+        confidence: aiAnalysis?.confidence,
+        analysis: aiAnalysis?.analysis,
+        gut_health_insights: aiAnalysis?.gutHealthInsights,
+        medical_interpretation: aiAnalysis?.medicalInterpretation,
+      }])
+      .select()
+      .single()
 
-  if (error) {
-    throw new Error(`Failed to store analysis result: ${error.message}`)
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error: unknown) {
+    // If the error is about missing columns, try without the new fields
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('gut_health_insights') || errorMessage.includes('medical_interpretation')) {
+      console.log('⚠️ New columns not found in database, storing basic analysis only...');
+
+      const { data, error: fallbackError } = await supabase
+        .from('analysis_results')
+        .insert([{
+          filename,
+          mime_type: mimeType,
+          size,
+          image_data: normalizedImageData,
+          device_id: deviceId,
+          notes,
+          bristol_score: aiAnalysis?.bristolScore,
+          color: aiAnalysis?.color,
+          volume_estimate: aiAnalysis?.volumeEstimate,
+          hydration_index: aiAnalysis?.hydrationIndex,
+          flags: aiAnalysis?.flags,
+          confidence: aiAnalysis?.confidence,
+          analysis: aiAnalysis?.analysis,
+        }])
+        .select()
+        .single()
+
+      if (fallbackError) {
+        throw new Error(`Failed to store analysis result: ${fallbackError.message}`)
+      }
+
+      return data;
+    } else {
+      throw new Error(`Failed to store analysis result: ${errorMessage}`)
+    }
   }
-
-  return data
 }
 
 export async function getAnalysisResults(limit: number = 50, offset: number = 0): Promise<StoredAnalysis[]> {

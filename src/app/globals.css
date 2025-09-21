@@ -1,13 +1,14 @@
 @import "tailwindcss";
+@import "../styles/themes.css";
 
 :root {
-  --primary: #2596be;
-  --primary-dark: #1e7ba0;
-  --primary-light: #4aa5c7;
+  --primary: #f59e0b;
+  --primary-dark: #d97706;
+  --primary-light: #fbbf24;
   --background: #f8fafc;
   --foreground: #0f172a;
   --card-bg: #ffffff;
-  --border-color: rgba(37, 150, 190, 0.15);
+  --border-color: rgba(245, 158, 11, 0.15);
   --text-muted: #64748b;
   --accent: #f59e0b;
   --success: #10b981;
@@ -27,7 +28,7 @@
     --background: #0f172a;
     --foreground: #f8fafc;
     --card-bg: rgba(30, 41, 59, 0.8);
-    --border-color: rgba(37, 150, 190, 0.25);
+    --border-color: rgba(245, 158, 11, 0.25);
     --text-muted: #94a3b8;
   }
 }
@@ -43,8 +44,8 @@ body {
   font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
   letter-spacing: -0.01em;
   background-image:
-    radial-gradient(circle at 20% 50%, rgba(37, 150, 190, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(37, 150, 190, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
 }
 
 /* Custom scrollbar */
@@ -72,8 +73,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(37, 150, 190, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(37, 150, 190, 0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.5); }
 }
 
 @keyframes slide-up {
@@ -134,8 +135,8 @@ body {
 /* Subtle grid pattern */
 .grid-pattern {
   background-image:
-    linear-gradient(rgba(37, 150, 190, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 150, 190, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(245, 158, 11, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
