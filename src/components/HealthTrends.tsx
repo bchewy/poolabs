@@ -34,6 +34,14 @@ interface TrendDataPoint {
 const InfoTooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {
   const [show, setShow] = useState(false);
 
+  const formatContent = (text: string) => {
+    return text.split('\n').map((line, index) => {
+      const trimmedLine = line.trim();
+      if (trimmedLine === '') return <div key={index} className="h-2"></div>;
+      return <div key={index} className="text-xs whitespace-nowrap">{trimmedLine}</div>;
+    });
+  };
+
   return (
     <div className="relative inline-block">
       <div
@@ -44,8 +52,10 @@ const InfoTooltip = ({ children, content }: { children: React.ReactNode; content
         {children}
       </div>
       {show && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg z-50 w-64">
-          <div className="text-xs font-medium mb-1">{content}</div>
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-3 bg-gray-900 text-white text-sm rounded-lg shadow-lg z-50 w-80">
+          <div className="space-y-1">
+            {formatContent(content)}
+          </div>
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
         </div>
       )}
@@ -271,7 +281,7 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
               <div className="flex-1">
                 <div className="flex items-center gap-1">
                   <p className="text-sm text-gray-600 dark:text-gray-400">Frequency</p>
-                  <InfoTooltip content="Average bowel movements per day. Normal range is 1-3 times per day. Significant deviations may indicate digestive issues.">
+                  <InfoTooltip content="🚽 Daily Bowel Movement Frequency: Normal range is 1-3 times per day. Less than 1 may indicate constipation; more than 3 could suggest diarrhea or rapid transit. Regular patterns are key to digestive health!">
                     <HelpCircle className="w-3 h-3 text-gray-400" />
                   </InfoTooltip>
                 </div>
@@ -314,8 +324,19 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Health Score Trend</h3>
-            <InfoTooltip content="Health Score (0-100) combines Bristol stool consistency, hydration levels, and absence of concerning flags. Higher scores indicate better digestive health.">
-              <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+            <InfoTooltip content={`💚 Health Score Guide (0-100)
+
+🟢 80-100: EXCELLENT ✓
+🔵 65-79: GOOD ✓
+🟡 50-64: FAIR ⚠️
+🟠 35-49: POOR ⚠️
+🔴 0-34: CRITICAL ❌
+
+💡 Combines stool consistency,
+   hydration, and health flags`}>
+              <div className="cursor-help">
+                <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+              </div>
             </InfoTooltip>
           </div>
           <div className="h-64">
@@ -341,7 +362,67 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
                   itemStyle={{ color: '#fff' }}
                   formatter={(value: number, name: string) => {
                     if (name === 'healthScore') {
-                      return [`${value}/100`, 'Health Score'];
+                      const getHealthCategory = (score: number) => {
+                        if (score >= 80) return {
+                          label: 'Excellent',
+                          color: '#10b981',
+                          description: 'Optimal digestive health with no concerns',
+                          recommendations: ['Maintain current habits', 'Continue regular monitoring']
+                        };
+                        if (score >= 65) return {
+                          label: 'Good',
+                          color: '#3b82f6',
+                          description: 'Healthy digestive function with minor room for improvement',
+                          recommendations: ['Stay hydrated', 'Maintain fiber intake']
+                        };
+                        if (score >= 50) return {
+                          label: 'Fair',
+                          color: '#eab308',
+                          description: 'Some digestive concerns that need attention',
+                          recommendations: ['Increase water intake', 'Add more fiber to diet', 'Consider probiotics']
+                        };
+                        if (score >= 35) return {
+                          label: 'Poor',
+                          color: '#f97316',
+                          description: 'Significant digestive issues requiring intervention',
+                          recommendations: ['Consult healthcare provider', 'Dietary changes needed', 'Monitor closely']
+                        };
+                        return {
+                          label: 'Critical',
+                          color: '#ef4444',
+                          description: 'Severe digestive health concerns requiring immediate attention',
+                          recommendations: ['Seek medical attention', 'Urgent dietary review', 'Professional consultation needed']
+                        };
+                      };
+
+                      const category = getHealthCategory(value);
+                      return [
+                        <div key="health-score-tooltip" className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-lg">{value}/100</span>
+                            <div className="flex items-center gap-1">
+                              <div
+                                className="w-3 h-3 rounded-full border border-white"
+                                style={{ backgroundColor: category.color }}
+                              />
+                              <span className="text-sm font-medium" style={{ color: category.color }}>
+                                {category.label}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-xs opacity-90">{category.description}</div>
+                          <div className="space-y-1">
+                            <div className="text-xs font-medium opacity-75">Recommendations:</div>
+                            {category.recommendations.map((rec, idx) => (
+                              <div key={idx} className="text-xs opacity-90 flex items-start gap-1">
+                                <span className="text-green-400 mt-0.5">•</span>
+                                <span>{rec}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>,
+                        'Health Score'
+                      ];
                     }
                     return [value, name];
                   }}
@@ -364,8 +445,16 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
         <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Bristol Score Trend</h3>
-            <InfoTooltip content="Bristol Stool Scale (1-7) medical classification: Types 3-4 indicate optimal digestive health, 1-2 suggest constipation, 5-7 indicate loose stool/diarrhea. Hover over bars for detailed explanations of each type.">
-              <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+            <InfoTooltip content={`🚽 Bristol Stool Scale Guide
+
+🟢 Types 3-4: OPTIMAL ✓
+🟡 Types 1-2: CONSTIPATION ⚠️
+🔴 Types 5-7: DIARRHEA ⚠️
+
+💡 Hover bars for detailed insights`}>
+              <div className="cursor-help">
+                <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+              </div>
             </InfoTooltip>
           </div>
           <div className="h-64">
@@ -436,6 +525,10 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
                     };
 
                     const info = bristolInfo[value as keyof typeof bristolInfo];
+                    if (!info) {
+                      return [`${value} - Unknown score`, 'Bristol Score'];
+                    }
+
                     return [
                       <div key="bristol-tooltip" className="space-y-2">
                         <div className="flex items-center gap-2">
@@ -464,19 +557,8 @@ function HealthTrends({ deviceId = 'all', className = '' }: HealthTrendsProps) {
                 />
                 <Bar
                   dataKey="bristolScore"
+                  fill="#10b981"
                   radius={[2, 2, 0, 0]}
-                  fill={(entry: any) => {
-                    const colors = {
-                      1: '#ef4444',
-                      2: '#f97316',
-                      3: '#10b981',
-                      4: '#059669',
-                      5: '#eab308',
-                      6: '#f97316',
-                      7: '#ef4444'
-                    };
-                    return colors[entry.bristolScore as keyof typeof colors] || '#6b7280';
-                  }}
                 />
               </BarChart>
             </ResponsiveContainer>

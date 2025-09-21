@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -68,6 +69,9 @@ export default function Navigation() {
         <div className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
           v1.0 • Simple & Private
         </div>
+
+        {/* Notification Bell */}
+        <NotificationBell />
 
         {/* Mobile menu button */}
         <button

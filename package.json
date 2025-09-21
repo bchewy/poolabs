@@ -6,10 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-data": "node generate-real-data.js",
+    "generate-scenarios": "node generate-health-scenarios.js",
+    "generate-batch": "node generate-batch-data.js",
+    "generate-enhanced": "node fake-data-real-api.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
+    "dotenv": "^17.2.2",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "openai": "^5.22.0",

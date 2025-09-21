@@ -379,7 +379,8 @@ BEGIN
   END LOOP;
 END $$;
 
--- Add specific "super bad" days with multiple concerning entries
+-- Add specific "super bad" days wi
+th multiple concerning entries
 -- Episode 1: Acute gastroenteritis (5 days ago)
 DO $$
 DECLARE

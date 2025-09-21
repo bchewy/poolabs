@@ -122,9 +122,9 @@ Be thorough but conservative in your assessments. Provide specific, actionable a
 ${notes ? `Additional user notes: ${notes}` : ''}`;
 
     // Use OpenAI's Responses API with vision capabilities
-    const modelName = "gpt-4o-mini"; // Faster model for quicker analysis
+    const modelName = "gpt-5"; // Faster model for quicker analysis
     console.log(`🤖 [${imageId}] Calling OpenAI Responses API with model: ${modelName}`);
-    console.log(`📊 [${imageId}] Model details: gpt-4o-mini - Latest fast multimodal model`);
+    console.log(`📊 [${imageId}] Model details: gpt-5 - Latest fast multimodal model`);
     const openaiStart = Date.now();
 
     const response = await openai.responses.create({
@@ -192,17 +192,17 @@ ${notes ? `Additional user notes: ${notes}` : ''}`;
     console.log(`🔧 [${imageId}] Validating and normalizing response...`);
     const validatedResult = {
       bristolScore: analysisResult.bristolScore &&
-                   analysisResult.bristolScore >= 1 &&
-                   analysisResult.bristolScore <= 7 ?
-                   Math.round(analysisResult.bristolScore) : undefined,
+        analysisResult.bristolScore >= 1 &&
+        analysisResult.bristolScore <= 7 ?
+        Math.round(analysisResult.bristolScore) : undefined,
       color: analysisResult.color?.toLowerCase() || undefined,
       volumeEstimate: ["low", "medium", "high"].includes(analysisResult.volumeEstimate || "") ?
-                     analysisResult.volumeEstimate as "low" | "medium" | "high" : undefined,
+        analysisResult.volumeEstimate as "low" | "medium" | "high" : undefined,
       hydrationIndex: analysisResult.hydrationIndex !== undefined ?
-                      Math.max(0, Math.min(1, analysisResult.hydrationIndex)) : undefined,
+        Math.max(0, Math.min(1, analysisResult.hydrationIndex)) : undefined,
       flags: Array.isArray(analysisResult.flags) ? analysisResult.flags : [],
       confidence: analysisResult.confidence !== undefined ?
-                 Math.max(0, Math.min(1, analysisResult.confidence)) : undefined,
+        Math.max(0, Math.min(1, analysisResult.confidence)) : undefined,
       analysis: analysisResult.analysis || "Analysis completed but no detailed summary provided.",
       gutHealthInsights: analysisResult.gutHealthInsights ? {
         digestionStatus: analysisResult.gutHealthInsights.digestionStatus || "Unable to determine digestion status",
@@ -214,7 +214,7 @@ ${notes ? `Additional user notes: ${notes}` : ''}`;
       medicalInterpretation: analysisResult.medicalInterpretation ? {
         possibleConditions: Array.isArray(analysisResult.medicalInterpretation.possibleConditions) ? analysisResult.medicalInterpretation.possibleConditions : [],
         urgencyLevel: ["low", "medium", "high"].includes(analysisResult.medicalInterpretation.urgencyLevel || "") ?
-                        analysisResult.medicalInterpretation.urgencyLevel as "low" | "medium" | "high" : "low",
+          analysisResult.medicalInterpretation.urgencyLevel as "low" | "medium" | "high" : "low",
         whenToConsultDoctor: analysisResult.medicalInterpretation.whenToConsultDoctor || "No specific guidance provided",
         redFlags: Array.isArray(analysisResult.medicalInterpretation.redFlags) ? analysisResult.medicalInterpretation.redFlags : [],
       } : undefined,

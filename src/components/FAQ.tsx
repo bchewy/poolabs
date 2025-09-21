@@ -22,7 +22,7 @@ export default function FAQ() {
     },
     {
       question: "Does PooLabs take photos or videos?",
-      answer: "No! PooLabs prioritizes privacy above all. The device only collects sensor data to generate health insights. No images are ever saved or shared—only discrete health metrics and trend analysis."
+      answer: "No! PooLabs only takes photos angled downwards to the toilet bowl to detect bowel events. We employ redaction techniques for ALL events, and only labels are stored and taken from the image."
     },
     {
       question: "What health metrics does PooLabs track?",
