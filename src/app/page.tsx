@@ -18,31 +18,59 @@ import {
   Droplets,
   TestTube
 } from "lucide-react";
+import LiquidEther from "@/components/LiquidEther";
 
 export default function Home() {
   const [isPoopTheme, setIsPoopTheme] = useState(true); // Always use poop theme
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {/* Liquid Ether Background */}
+      <div className="fixed inset-0" style={{ zIndex: 1 }}>
+        <LiquidEther
+          key="liquid-ether-bg"
+          colors={['#8B4513', '#D2691E', '#CD853F']}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={false}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+          style={{
+            width: '100vw',
+            height: '100vh',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+        />
+      </div>
+
       {/* Hero Section */}
       <section className={`relative overflow-hidden ${
         isPoopTheme
-          ? 'bg-gradient-to-br from-amber-50 via-white to-amber-50 dark:from-gray-900 dark:via-gray-950 dark:to-amber-950'
-          : 'bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-blue-950'
+          ? 'bg-gradient-to-br from-amber-50/20 via-white/10 to-amber-50/20 dark:from-gray-900/20 dark:via-gray-950/10 dark:to-amber-950/20'
+          : 'bg-gradient-to-br from-blue-50/20 via-white/10 to-blue-50/20 dark:from-gray-900/20 dark:via-gray-950/10 dark:to-blue-950/20'
       }`}>
-        <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
           <div className="text-center animate-slide-up">
             <div className="inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold ring-1 ring-inset backdrop-blur-sm bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 ring-amber-600/20">
               <Activity className="h-4 w-4" />
               Senior Health Monitoring
             </div>
-            <h1 className="mt-8 text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
+            <h1 className="mt-8 text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-amber-700 dark:text-amber-300">
               Discreet Toilet-Clip
-              <span className="block mt-2 text-blue-600 dark:text-blue-400">
+              <span className="block mt-2 text-amber-600 dark:text-amber-400">
                 Health Monitor 🏡
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-3xl text-xl leading-relaxed text-blue-600 dark:text-blue-400">
+            <p className="mx-auto mt-6 max-w-3xl text-xl leading-relaxed text-amber-600 dark:text-amber-400">
               Private detection of bowel events for seniors living alone. Flags constipation/diarrhea trends without photos—only discrete health labels for caregiver awareness.
               <span className="ml-2">🛡️</span>
             </p>
@@ -56,7 +84,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/database-dashboard"
-                className="group inline-flex items-center gap-3 border-2 px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 rounded-full border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-900 hover:border-blue-600 dark:hover:border-blue-600 text-blue-700 dark:text-blue-300"
+                className="group inline-flex items-center gap-3 border-2 px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 rounded-full border-amber-300 dark:border-amber-700 bg-white dark:bg-gray-900 hover:border-amber-600 dark:hover:border-amber-600 text-amber-700 dark:text-amber-300"
               >
                 Health Trends
                 <BarChart3 className="h-5 w-5" />
@@ -64,6 +92,7 @@ export default function Home() {
             </div>
           </div>
 
+          
           {/* Floating elements */}
           <div className="absolute top-20 left-10 animate-float">
             <div className="w-16 h-16 rounded-full flex items-center justify-center bg-amber-200 dark:bg-amber-900/30">
@@ -79,7 +108,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-24 bg-white dark:bg-gray-900/50">
+      <section className="py-24 bg-white/70 dark:bg-gray-900/50 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl text-center animate-scale-in">
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl text-amber-700 dark:text-amber-300">
@@ -125,7 +154,7 @@ export default function Home() {
       </section>
 
     {/* Why PooLabs Section */}
-      <section className="py-24 bg-gray-50 dark:bg-gray-900/30">
+      <section className="py-24 bg-gray-50/70 dark:bg-gray-900/30 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-6 py-2 text-sm font-semibold text-white">
@@ -211,7 +240,7 @@ export default function Home() {
       </section>
 
       {/* Perfect For Everyone */}
-      <section className="py-24 bg-white dark:bg-gray-900/50">
+      <section className="py-24 bg-white/70 dark:bg-gray-900/50 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
@@ -265,7 +294,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-gradient-to-r from-amber-600 to-amber-700 relative overflow-hidden">
+      <section className="py-32 bg-gradient-to-r from-amber-600/90 to-amber-700/90 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative mx-auto max-w-4xl px-6 sm:px-8 lg:px-12 text-center">
           <div className="animate-scale-in">

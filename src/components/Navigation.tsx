@@ -54,6 +54,13 @@ export default function Navigation() {
             Health Trends
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 transition-all duration-300 group-hover:w-full"></span>
           </Link>
+          <Link
+            href="/roadmap"
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-smooth relative group"
+          >
+            Roadmap
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 transition-all duration-300 group-hover:w-full"></span>
+          </Link>
         </nav>
       </div>
 
@@ -106,6 +113,13 @@ export default function Navigation() {
               className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-smooth px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               Health Trends
+            </Link>
+            <Link
+              href="/roadmap"
+              onClick={() => setIsMenuOpen(false)}
+              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-smooth px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              Roadmap
             </Link>
           </nav>
         </div>
